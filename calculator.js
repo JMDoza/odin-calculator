@@ -1,16 +1,40 @@
 let operator
 let num1 = 0
 let num2 = 0
+let current = 0
 
 const displayText = document.querySelector(".cal-display-text")
 
 
 function initializeButtonEvents () {
-  const buttons = document.querySelectorAll(".num-button")
-  buttons.forEach((button) => {
+  const numButtons = document.querySelectorAll(".num-button")
+  numButtons.forEach((button) => {
     button.addEventListener("click", () => {
+      if (current == 1) {
+        displayText.textContent = ""
+        current = 0
+      }
       displayText.textContent += button.textContent
     })
+  })
+
+  const operatorButtons = document.querySelectorAll(".operation-button")
+  operatorButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      num1 = parseFloat(displayText.textContent)
+      operator = button.textContent
+      current = 1
+    })
+  })
+
+  const operateButton = document.querySelector(".operate-button").addEventListener("click", () => {
+    num2 = parseFloat(displayText.textContent)
+    console.log(`${num1} ${operator} ${num2}`);
+    
+    num1 = operate(operator, num1, num2)
+    console.log(num1);
+    
+    displayText.textContent = num1
   })
 
   const ac = document.querySelector(".cal-clear-button")
@@ -25,20 +49,16 @@ function clearDisplay(){
 function operate (operator, num1, num2) {
   switch (operator) {
     case "+":
-      add(num1, num2)
-      break;
+      return add(num1, num2)
 
     case "-":
-      subtract(num1, num2)
-      break;
+      return subtract(num1, num2)
   
     case "*":
-      multiply(num1, num2)
-      break;
+      return multiply(num1, num2)
 
     case "/":
-      divide(num1, num2)
-      break;
+      return divide(num1, num2)
 
     default:
       break;
@@ -54,10 +74,12 @@ function subtract(a, b) {
 };
 
 function multiply(arr) {
+  arr = [num1, num2]
   return arr.reduce((total, num) => total * num)
 };
 
 function divide(arr) {
+  let temp = [num1, num2]
   return arr.reduce((total, num) => total / num)
 };
 
