@@ -1,64 +1,91 @@
-let operator
-let num1 = 0
-let num2 = 0
-let current = 0
+let operator = null;
+let firstOperand = 0;
+let secondOperand = 0;
+let newOperation = true;
+let clear = false;
 
-const displayText = document.querySelector(".cal-display-text")
+const displayText = document.querySelector(".cal-display-text");
 
 
-function initializeButtonEvents () {
-  const numButtons = document.querySelectorAll(".num-button")
+function initializeButtonEvents() {
+  const numButtons = document.querySelectorAll(".num-button");
   numButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      if (current == 1) {
-        displayText.textContent = ""
-        current = 0
+      if (clear && !newOperation) {
+        clearDisplay()
       }
-      displayText.textContent += button.textContent
+      else if (clear) {
+        displayText.textContent = "";
+        clear = false;
+      }
+      displayText.textContent += button.textContent;
     })
   })
 
-  const operatorButtons = document.querySelectorAll(".operation-button")
+  const operatorButtons = document.querySelectorAll(".operation-button");
   operatorButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      num1 = parseFloat(displayText.textContent)
-      operator = button.textContent
-      current = 1
+      setFirstOperand(displayText.textContent)
+      setOperator(button.textContent);
+
+      clear = true;
+      newOperation = true;
     })
   })
 
-  const operateButton = document.querySelector(".operate-button").addEventListener("click", () => {
-    num2 = parseFloat(displayText.textContent)
-    console.log(`${num1} ${operator} ${num2}`);
-    
-    num1 = operate(operator, num1, num2)
-    console.log(num1);
-    
-    displayText.textContent = num1
+  document.querySelector(".operate-button").addEventListener("click", () => {
+    if (displayText.textContent === "" || operator === null) {
+      return
+    }
+
+    if (newOperation) {
+      setSecondOperand(displayText.textContent);
+      newOperation = false;
+    }
+
+    console.log(`${firstOperand} ${operator} ${secondOperand}`);
+    setFirstOperand(operate(operator, firstOperand, secondOperand));
+    displayText.textContent = firstOperand;
+    clear = true
   })
 
-  const ac = document.querySelector(".cal-clear-button")
-  ac.addEventListener("click", () => clearDisplay())
+  document.querySelector(".cal-clear-button").addEventListener("click", () => clearDisplay())
 }
 
-function clearDisplay(){
-  displayText.textContent = ""
-  
+function clearDisplay() {
+  displayText.textContent = "";
+  firstOperand = 0;
+  secondOperand = 0;
+  operator = null;
+  newOperation = true;
+  clear = false
 }
 
-function operate (operator, num1, num2) {
+function setFirstOperand(num) {
+  firstOperand = parseFloat(num)
+}
+
+function setSecondOperand(num) {
+  secondOperand = parseFloat(num)
+}
+
+function setOperator(operation) {
+  operator = operation
+}
+
+function operate(operator, firstOperand, secondOperand) {
   switch (operator) {
     case "+":
-      return add(num1, num2)
+      return add(firstOperand, secondOperand);
 
     case "-":
-      return subtract(num1, num2)
-  
+      return subtract(firstOperand, secondOperand);
+
     case "*":
-      return multiply(num1, num2)
+      return multiply(firstOperand, secondOperand);
 
     case "/":
-      return divide(num1, num2)
+      return divide(firstOperand, secondOperand);
 
     default:
       break;
@@ -66,33 +93,19 @@ function operate (operator, num1, num2) {
 }
 
 function add(a, b) {
-  return a + b
+  return a + b;
 };
 
 function subtract(a, b) {
-  return a - b
+  return a - b;
 };
 
-function multiply(arr) {
-  arr = [num1, num2]
-  return arr.reduce((total, num) => total * num)
+function multiply(a, b) {
+  return a * b;
 };
 
-function divide(arr) {
-  let temp = [num1, num2]
-  return arr.reduce((total, num) => total / num)
+function divide(a, b) {
+  return a / b;
 };
 
-initializeButtonEvents()
-
-// function power(a, b) {
-//   return Math.pow(a, b)
-// };
-
-// function factorial(a) {
-//   if (a == 0) {
-//     return 1
-//   } else {
-//     return a * factorial(a - 1)
-//   }
-// };
+initializeButtonEvents();
