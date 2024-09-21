@@ -11,6 +11,10 @@ function initializeButtonEvents() {
   const numButtons = document.querySelectorAll(".num-button");
   numButtons.forEach((button) => {
     button.addEventListener("click", () => {
+      if (displayText.textContent.length > 19) {
+        return
+      }
+
       if (clear && !newOperation) {
         clearDisplay()
       }
